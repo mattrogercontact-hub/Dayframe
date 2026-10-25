@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.npm-cache/
+output/
+*.tsbuildinfo
+.env.*
+!.env.example
+.dayframe-private/
