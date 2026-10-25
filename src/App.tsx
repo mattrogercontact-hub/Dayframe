@@ -19,7 +19,7 @@ import agendaIcon from 'bootstrap-icons/icons/card-list.svg?url'
 import weekIcon from 'bootstrap-icons/icons/calendar-week.svg?url'
 import monthIcon from 'bootstrap-icons/icons/calendar-month.svg?url'
 import displayIcon from 'bootstrap-icons/icons/gear.svg?url'
-import windowsIcon from 'bootstrap-icons/icons/windows.svg?url'
+import systemKeyboardIcon from 'bootstrap-icons/icons/keyboard-fill.svg?url'
 import keyboardIcon from 'bootstrap-icons/icons/keyboard.svg?url'
 import { deleteGoogleEvent, disconnectGoogle, getGoogleCalendars, getGoogleSeries, getGoogleStatus, googleEventProvider, saveGoogleEvent, saveGoogleSelection,
   type GoogleCalendarChoice, type GoogleCalendarStatus } from './googleCalendar'
@@ -774,31 +774,6 @@ export default function App() {
     {storageWarning && <div className="storage-notice" role="status">This browser is not saving changes. Check that local storage is available.</div>}
     {recentlyDeleted && <div className="calendar-health" role="status"><span>{recentlyDeleted.title} was removed from this display.</span>
       <button type="button" onClick={undoLocalDelete}>Undo</button></div>}
-    {(calendarStatus?.connected || calendarStatusError) && <div className={`calendar-health${calendarError || calendarStatusError ? ' has-error' : ''}`}
-      role={calendarError || calendarStatusError ? 'alert' : 'status'}>
-      <span>{calendarStatusError || (calendarError
-        ? `Google Calendar unavailable · ${lastCalendarSync ? `Last updated ${syncTimeLabel(lastCalendarSync, now)}` : 'No recent reading'} · ${calendarError}`
-        : calendarSyncing ? 'Google Calendar syncing…' : lastCalendarSync
-          ? `Google Calendar updated ${syncTimeLabel(lastCalendarSync, now)}` : 'Google Calendar is waiting to sync.')}</span>
-      <button type="button" onClick={() => { refreshGoogleStatus(); setCalendarRevision(value => value + 1) }}
-        disabled={calendarSyncing && !calendarStatusError}>Retry sync</button>
-    </div>}
-    {Boolean(appleStatus?.subscriptions.length) && <div className={`calendar-health${appleError ? ' has-error' : ''}`}
-      role={appleError ? 'alert' : 'status'}>
-      <span>{appleError
-        ? `Apple Calendar unavailable · ${lastAppleSync ? `Last updated ${syncTimeLabel(lastAppleSync, now)}` : 'No recent reading'} · ${appleError}`
-        : appleSyncing ? 'Apple Calendar syncing…' : lastAppleSync
-          ? `Apple Calendar updated ${syncTimeLabel(lastAppleSync, now)}` : 'Apple Calendar is waiting to sync.'}</span>
-      <button type="button" disabled={appleSyncing} onClick={() => setAppleRevision(value => value + 1)}>Retry sync</button>
-    </div>}
-    {Boolean(iCloudStatus?.connected && iCloudStatus.selectedIds.length) && <div className={`calendar-health${iCloudError ? ' has-error' : ''}`}
-      role={iCloudError ? 'alert' : 'status'}>
-      <span>{iCloudError
-        ? `iCloud unavailable · ${lastICloudSync ? `Last updated ${syncTimeLabel(lastICloudSync, now)}` : 'No recent reading'} · ${iCloudError}`
-        : iCloudSyncing ? 'iCloud syncing…' : lastICloudSync
-          ? `iCloud updated ${syncTimeLabel(lastICloudSync, now)}` : 'iCloud is waiting to sync.'}</span>
-      <button type="button" disabled={iCloudSyncing} onClick={() => setICloudRevision(value => value + 1)}>Retry sync</button>
-    </div>}
     <main>
       <h1 className="sr-only">Dayframe calendar</h1>
       {activeFace === 'agenda' && <><div className="calendar-toolbar agenda-toolbar"><h2>{formatLongDate(cursor)}</h2>
@@ -837,14 +812,39 @@ export default function App() {
         <span className={`face-preview face-preview-${face}`} aria-hidden="true"><i /><i /><i /><i /></span><span><strong>{faceNames[face]}</strong><small>{face === 'agenda' ? 'Today, in order' : face === 'week' ? 'Seven-day grid' : 'The whole month'}</small></span>
         <span className="choice-check" aria-hidden="true">{display.face === face ? '✓' : ''}</span></button>)}</div></fieldset>
       <GoogleCalendarSettings status={calendarStatus} onChange={setCalendarStatus} onRefresh={() => setCalendarRevision(value => value + 1)} />
+      {(calendarStatus?.connected || calendarStatusError) && <div className={`calendar-health${calendarError || calendarStatusError ? ' has-error' : ''}`}
+        role={calendarError || calendarStatusError ? 'alert' : 'status'}>
+        <span>{calendarStatusError || (calendarError
+          ? `Google Calendar unavailable · ${lastCalendarSync ? `Last updated ${syncTimeLabel(lastCalendarSync, now)}` : 'No recent reading'} · ${calendarError}`
+          : calendarSyncing ? 'Google Calendar syncing…' : lastCalendarSync
+            ? `Google Calendar updated ${syncTimeLabel(lastCalendarSync, now)}` : 'Google Calendar is waiting to sync.')}</span>
+        <button type="button" onClick={() => { refreshGoogleStatus(); setCalendarRevision(value => value + 1) }}
+          disabled={calendarSyncing && !calendarStatusError}>Retry sync</button>
+      </div>}
       <AppleCalendarSettings status={appleStatus} keyboardMode={display.keyboardMode} onChange={changeAppleStatus} />
+      {Boolean(appleStatus?.subscriptions.length) && <div className={`calendar-health${appleError ? ' has-error' : ''}`}
+        role={appleError ? 'alert' : 'status'}>
+        <span>{appleError
+          ? `Apple Calendar unavailable · ${lastAppleSync ? `Last updated ${syncTimeLabel(lastAppleSync, now)}` : 'No recent reading'} · ${appleError}`
+          : appleSyncing ? 'Apple Calendar syncing…' : lastAppleSync
+            ? `Apple Calendar updated ${syncTimeLabel(lastAppleSync, now)}` : 'Apple Calendar is waiting to sync.'}</span>
+        <button type="button" disabled={appleSyncing} onClick={() => setAppleRevision(value => value + 1)}>Retry sync</button>
+      </div>}
       <ICloudCalendarSettings status={iCloudStatus} keyboardMode={display.keyboardMode} onChange={changeICloudStatus} />
+      {Boolean(iCloudStatus?.connected && iCloudStatus.selectedIds.length) && <div className={`calendar-health${iCloudError ? ' has-error' : ''}`}
+        role={iCloudError ? 'alert' : 'status'}>
+        <span>{iCloudError
+          ? `iCloud unavailable · ${lastICloudSync ? `Last updated ${syncTimeLabel(lastICloudSync, now)}` : 'No recent reading'} · ${iCloudError}`
+          : iCloudSyncing ? 'iCloud syncing…' : lastICloudSync
+            ? `iCloud updated ${syncTimeLabel(lastICloudSync, now)}` : 'iCloud is waiting to sync.'}</span>
+        <button type="button" disabled={iCloudSyncing} onClick={() => setICloudRevision(value => value + 1)}>Retry sync</button>
+      </div>}
       <WeatherSettings location={weather.location} keyboardMode={display.keyboardMode} onSelect={chooseWeatherLocation} />
       <fieldset className="settings-group"><legend>Touch keyboard</legend><div className="setting-options" role="radiogroup" aria-label="Touch keyboard">
         <button type="button" className={`setting-choice${display.keyboardMode === 'system' ? ' selected' : ''}`}
           role="radio" aria-checked={display.keyboardMode === 'system'} onClick={() => chooseKeyboardMode('system')}>
-          <span className="keyboard-choice-icon" aria-hidden="true"><span className="nav-icon" style={{ maskImage: `url("${windowsIcon}")` }} /></span>
-          <span><strong>Windows touch keyboard</strong><small>Opens on touch when Windows allows it.</small></span>
+          <span className="keyboard-choice-icon" aria-hidden="true"><span className="nav-icon" style={{ maskImage: `url("${systemKeyboardIcon}")` }} /></span>
+          <span><strong>System touch keyboard</strong><small>Uses your computer's on-screen keyboard, if available.</small></span>
           <span className="choice-check" aria-hidden="true">{display.keyboardMode === 'system' ? '✓' : ''}</span></button>
         <button type="button" className={`setting-choice${display.keyboardMode === 'dayframe' ? ' selected' : ''}`}
           role="radio" aria-checked={display.keyboardMode === 'dayframe'} onClick={() => chooseKeyboardMode('dayframe')}>

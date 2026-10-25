@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { addDays, categoryNames, type CalendarEvent, type Category } from './calendar'
 import type { EventInput, GoogleCalendarChoice } from './googleCalendar'
 import type { KeyboardMode } from './storage'
+import { TimeField } from './TimeField'
 
 export interface EventDraft extends EventInput { category: Category }
 
@@ -94,9 +95,9 @@ export function EventEditor({ original, date, slotStart, connected, calendars, k
         {(Object.keys(categoryNames) as Category[]).map(value => <option key={value} value={value}>{categoryNames[value]}</option>)}</select></label>}
     <label className="editor-check"><input type="checkbox" checked={allDay} onChange={event => setAllDay(event.target.checked)} />All day</label>
     <div className="editor-dates"><label>Start date<input required type="date" value={startDate} onChange={event => changeStartDate(event.target.value)} /></label>
-      {!allDay && <label>Start time<input required type="time" value={startTime} onChange={event => changeStartTime(event.target.value)} /></label>}
+      {!allDay && <TimeField label="Start time" value={startTime} onChange={changeStartTime} />}
       <label>{allDay ? 'Last day' : 'End date'}<input required type="date" value={endDate} onChange={event => setEndDate(event.target.value)} /></label>
-      {!allDay && <label>End time<input required type="time" value={endTime} onChange={event => setEndTime(event.target.value)} /></label>}</div>
+      {!allDay && <TimeField label="End time" value={endTime} onChange={setEndTime} />}</div>
     {connected && !original && !calendarId.startsWith('icloud:') && <><label>Repeat<select aria-label="Repeat" value={repeat} onChange={event => setRepeat(event.target.value as typeof repeat)}>
       <option value="none">Does not repeat</option><option value="daily">Every day</option>
       <option value="weekly">Every week</option><option value="monthly">Every month</option>
