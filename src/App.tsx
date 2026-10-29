@@ -394,7 +394,7 @@ function WeekTimeGrid({ date, now, events, slotStart, onOpen, onDay, onEmptyHour
                   style={{ ...eventStyle(event), top, height, left: `calc(${column / columns * 100}% + 3px)`, width: `calc(${100 / columns}% - 6px)` }}
                   data-event-id={event.id} data-column={column} data-columns={columns}
                   onClick={() => onOpen(event)} aria-label={`${formatTime(event.start)} ${event.title}, ${eventLabel(event)}. Open details`} title={eventLabel(event)}>
-                  <span>{formatTime(event.start)}</span><strong>{event.title}</strong><small className="timegrid-event-source">{eventLabel(event)}</small>
+                  <span className="timegrid-event-content"><span>{formatTime(event.start)}</span><strong>{event.title}</strong><small className="timegrid-event-source">{eventLabel(event)}</small></span>
                 </button>)}</section>)}</div>
         </div>
       </div>
